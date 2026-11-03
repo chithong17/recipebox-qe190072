@@ -49,6 +49,7 @@ void main() {
     }
 
     Future<void> locate(Finder f) async {
+      await top();
       await t.scrollUntilVisible(
         f,
         250,
@@ -197,7 +198,7 @@ void main() {
     await tap(find.text('Clear'));
     await top();
     await text('search', '  LEMON  ');
-    await locate(find.text('Recipes: 1'));
+    await locate(find.text('Recipes: 2'));
     await shot('10_search');
     await tap(find.text('Clear'));
     await locate(find.text('At a glance'));
