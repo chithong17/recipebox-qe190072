@@ -413,15 +413,17 @@ class _ListScreenState extends State<ListScreen> {
       child: StreamBuilder<List<Recipe>>(
         stream: stream,
         builder: (context, s) {
-          if (s.hasError)
+          if (s.hasError) {
             return Center(
               child: Padding(
                 padding: const EdgeInsets.all(Tokens.padding),
                 child: Text(errorText(s.error!)),
               ),
             );
-          if (!s.hasData)
+          }
+          if (!s.hasData) {
             return const Center(child: CircularProgressIndicator());
+          }
           final q = search.text.trim().toLowerCase();
           final rows =
               s.data!
@@ -764,8 +766,9 @@ class _DetailScreenState extends State<DetailScreen> {
 
   @override
   Widget build(BuildContext context) {
-    if (FirebaseAuth.instance.currentUser == null)
+    if (FirebaseAuth.instance.currentUser == null) {
       return const Scaffold(body: Center(child: Text('Please Login')));
+    }
     return Scaffold(
       appBar: AppBar(title: const Text('Detail')),
       body: SafeArea(
@@ -773,10 +776,12 @@ class _DetailScreenState extends State<DetailScreen> {
           stream: Recipes.collection.doc(id).snapshots(),
           builder: (context, s) {
             if (s.hasError) return Center(child: Text(errorText(s.error!)));
-            if (!s.hasData)
+            if (!s.hasData) {
               return const Center(child: CircularProgressIndicator());
-            if (!s.data!.exists)
+            }
+            if (!s.data!.exists) {
               return const Center(child: Text('Recipe no longer available'));
+            }
             final r = Recipe.fromDoc(s.data!);
             return SingleChildScrollView(
               padding: const EdgeInsets.all(Tokens.padding),

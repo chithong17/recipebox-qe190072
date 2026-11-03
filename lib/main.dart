@@ -27,10 +27,11 @@ class RecipeBoxApp extends StatelessWidget {
     home: StreamBuilder<User?>(
       stream: FirebaseAuth.instance.authStateChanges(),
       builder: (context, s) {
-        if (s.connectionState == ConnectionState.waiting)
+        if (s.connectionState == ConnectionState.waiting) {
           return const Scaffold(
             body: Center(child: CircularProgressIndicator()),
           );
+        }
         return s.data == null
             ? const HomeScreen()
             : ListScreen(key: ValueKey(s.data!.uid), user: s.data!);

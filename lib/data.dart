@@ -65,22 +65,24 @@ class Recipes {
         .runTransaction((tx) async {
           final target = collection.doc(next.id);
           final snapshot = await tx.get(target);
-          if (previous?.id != next.id && snapshot.exists)
+          if (previous?.id != next.id && snapshot.exists) {
             throw FirebaseException(
               plugin: 'cloud_firestore',
               code: 'already-exists',
               message: 'A recipe with this name already exists.',
             );
+          }
           if (previous != null) {
             final old = previous.id == next.id
                 ? snapshot
                 : await tx.get(collection.doc(previous.id));
-            if (!old.exists)
+            if (!old.exists) {
               throw FirebaseException(
                 plugin: 'cloud_firestore',
                 code: 'not-found',
                 message: 'This recipe was deleted.',
               );
+            }
             if (previous.id != next.id) tx.delete(collection.doc(previous.id));
           }
           tx.set(target, next.toMap());
