@@ -11,6 +11,7 @@ void main() {
   testWidgets('RecipeBox complete device acceptance and report evidence', (
     t,
   ) async {
+    binding.platformDispatcher.platformBrightnessTestValue = Brightness.light;
     await app.main();
     await t.pumpAndSettle();
     await FirebaseAuth.instance.signOut();
@@ -92,6 +93,8 @@ void main() {
       'grader.qe190072@example.com',
     );
     final uid = FirebaseAuth.instance.currentUser!.uid;
+    final pending = await Recipes.collection.doc(recipeId(uid, 'Lemon Rice')).get();
+    if (pending.exists) await Recipes.collection.doc(pending.id).delete();
     final samples = [
       (
         'Avocado Toast',
@@ -192,6 +195,7 @@ void main() {
     await locate(find.text('Favorites: 2'));
     await shot('10_filter_favorites');
     await tap(find.text('Clear'));
+    await top();
     await text('search', '  LEMON  ');
     await locate(find.text('Recipes: 1'));
     await shot('10_search');

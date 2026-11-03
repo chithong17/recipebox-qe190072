@@ -1,4 +1,7 @@
 allprojects {
+    configurations.configureEach {
+        resolutionStrategy.force("com.google.code.findbugs:jsr305:3.0.2")
+    }
     repositories {
         google()
         mavenCentral()
