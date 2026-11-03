@@ -12,7 +12,7 @@ flutter run
 flutter build apk --release
 ```
 
-The client Firebase configuration for `recipebox-qe190072` is included in `lib/firebase_options.dart` and `android/app/google-services.json`. For a different Firebase project, replace those client configurations and publish `firestore.rules`. Enable Email/Password Authentication and create the default Firestore database. No admin or service account key is used.
+Set up the local Firebase client configuration before running the app. From the project root, run `flutterfire configure --project=recipebox-qe190072 --platforms=android` to generate `lib/firebase_options.dart`. Place the Android configuration downloaded from Firebase Console at `android/app/google-services.json`. Both files are ignored by Git. Enable Email/Password Authentication, create the default Firestore database, and deploy `firestore.rules` for the Firebase project.
 
 ## Features
 

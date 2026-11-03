@@ -53,3 +53,7 @@ app.*.map.json
 /03_11_2026*.docx
 /design.md
 /google-services.json
+
+# Local Firebase client configuration
+/lib/firebase_options.dart
+/android/app/google-services.json
