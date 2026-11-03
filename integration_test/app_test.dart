@@ -94,7 +94,9 @@ void main() {
       'grader.qe190072@example.com',
     );
     final uid = FirebaseAuth.instance.currentUser!.uid;
-    final pending = await Recipes.collection.doc(recipeId(uid, 'Lemon Rice')).get();
+    final pending = await Recipes.collection
+        .doc(recipeId(uid, 'Lemon Rice'))
+        .get();
     if (pending.exists) await Recipes.collection.doc(pending.id).delete();
     final samples = [
       (
