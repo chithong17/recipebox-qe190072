@@ -1,0 +1,31 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    function signedIn() { return request.auth != null; }
+    function keyFor(d) {
+      return d.userId + '_' + d.name.trim().lower().toUtf8().toBase64().replace('/', '_').replace('\\+', '-');
+    }
+    function valid(d, id) {
+      return d.keys().hasAll(['id','userId','name','category','difficulty','cookTime','favorite','createdAt'])
+        && d.keys().hasOnly(['id','userId','name','category','difficulty','cookTime','servings','favorite','notes','createdAt'])
+        && d.userId == request.auth.uid && d.id == id && id == keyFor(d)
+        && d.name is string && d.name.trim().size() > 0 && d.name.size() <= 80
+        && d.category in ['Breakfast','Lunch','Dinner','Dessert']
+        && d.difficulty in ['Easy','Medium','Hard']
+        && d.cookTime is int && d.cookTime >= 1 && d.cookTime <= 600
+        && (!('servings' in d) || (d.servings is int && d.servings >= 1 && d.servings <= 20))
+        && (!('notes' in d) || (d.notes is string && d.notes.size() <= 300))
+        && d.favorite is bool && d.createdAt is timestamp;
+    }
+    match /recipes/{id} {
+      allow get: if signedIn() && ((resource == null && id.matches(request.auth.uid + '_.*')) || resource.data.userId == request.auth.uid);
+      allow list: if signedIn() && resource.data.userId == request.auth.uid;
+      allow create: if signedIn() && valid(request.resource.data, id);
+      allow update: if signedIn() && resource.data.userId == request.auth.uid
+        && valid(request.resource.data,id)
+        && request.resource.data.createdAt == resource.data.createdAt
+        && request.resource.data.name.trim().lower() == resource.data.name.trim().lower();
+      allow delete: if signedIn() && resource.data.userId == request.auth.uid;
+    }
+  }
+}
